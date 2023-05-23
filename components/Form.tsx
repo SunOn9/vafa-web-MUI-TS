@@ -11,6 +11,7 @@ export interface State extends SnackbarOrigin {
 
 export default function Form(props: {isSigned: boolean}) {
   const router = useRouter()
+
   const [userId, setUserId] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -22,14 +23,20 @@ export default function Form(props: {isSigned: boolean}) {
     horizontal: 'center',})
   const [loading, setLoading] = useState(false)
 
-  const regex = new RegExp('^[a-zA-Z0-9]+(?:\.[a-zA-Z0-9]+)*@[a-zA-Z0-9]+(?:\.[a-zA-Z0-9]+)*$');
-
+  const regex = new RegExp("^[a-zA-Z0-9]+(?:\.[a-zA-Z0-9]+)*@[a-zA-Z0-9]+(?:\.[a-zA-Z0-9]+)*$");
+  const onClose = () => {
+    setError({
+      ...error,
+      open: false,
+      message: '',
+      })
+  }
   const validateLogin = () => {
     if (!email) {
       setError({...error, open: true, message: 'Email is required'})
       return false
     }
-    if(regex.test(email)) {
+    if(!regex.test(email)) {
       setError({...error, open: true, message:'Email is not valid'})
       return false
     }
@@ -49,7 +56,7 @@ export default function Form(props: {isSigned: boolean}) {
       setError({...error, open: true, message:'Email is required'})
       return false
     }
-    if(regex.test(email)) {
+    if(!regex.test(email)) {
       setError({...error, open: true, message:'Email is not valid'})
       return false
     }
@@ -110,6 +117,7 @@ export default function Form(props: {isSigned: boolean}) {
           label="Email"
           variant="outlined"
           required
+          {...loading && ({disabled: true})}
           onChange={(e)=>setEmail(e.target.value)}
           sx={{
             m: 1
@@ -121,6 +129,7 @@ export default function Form(props: {isSigned: boolean}) {
           label="Password"
           variant="outlined"
           required
+          {...loading && ({disabled: true})}
           onChange={(e)=>setPassword(e.target.value)}
           sx={{
             m: 1
@@ -133,7 +142,7 @@ export default function Form(props: {isSigned: boolean}) {
             label="Confirm password"
             variant="outlined"
             required
-            autoComplete='off'
+            {...loading && ({disabled: true})}
             onChange={(e)=>setConfirmPassword(e.target.value)}
             sx={{
               m: 1
@@ -165,14 +174,12 @@ export default function Form(props: {isSigned: boolean}) {
           </>
         )}
       </FormControl>
-      <Snackbar open={error.open} autoHideDuration={6000}>
+      <Snackbar open={error.open} onClose={onClose} autoHideDuration={1000}>
         <Alert severity="warning" sx={{ width: '100%' }}>
           {error.message}
         </Alert>
       </Snackbar>
-    </>
-      
-
+    </> 
   )
 }
 
