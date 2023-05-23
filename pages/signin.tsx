@@ -3,13 +3,27 @@ import React from 'react'
 import Form from '../components/Form'
 import Header from '../components/Header';
 
-export default function login() {
+import { Box } from '@mui/material';
+
+export default function SignIn(): React.JSX.Element {
   return (
-    <div>
+    <>
       <Header 
         isLoged={false}
         inSignIn={true}/>
-      <Form isSigned={false}/>
-    </div>
+      <Box
+        sx={{
+          display: 'flex',
+          flexDirection: 'column',
+          minHeight: '90vh',
+          alignItems: 'center',
+          justifyContent: 'center',
+          textAlign: 'center'
+        }}>
+        <Form 
+          isSigned={false}
+        />
+      </Box>
+    </>
   )
 }
