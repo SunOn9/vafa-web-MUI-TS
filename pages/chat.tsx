@@ -2,16 +2,16 @@ import React, { useEffect } from 'react'
 import { useState } from 'react';
 import { useRouter } from 'next/router';
 import Header from '@/components/Header'
-import {Box, Typography, Stack, TextField, Paper, FormControl, Backdrop} from '@mui/material'
+import {Box, Typography, Stack, TextField, Paper, FormControl, Backdrop, CircularProgress} from '@mui/material'
 import Link from 'next/link';
 
 
 
 interface chat {
-  id : string,
-  createAt: number,
-  req: string,
-  res: string
+  userId : string,
+  createdAt: string  ,
+  question: string,
+  answer: string  
 }
 
 interface currentId {
@@ -48,7 +48,7 @@ export default function Chat(): React.JSX.Element {
     }
   }
   //get the answer from AI
-  const getAnwer = async () =>{
+  const getAnswer = async () =>{
     const endpoint = 'https://api.pawan.krd/v1/chat/completions';
     const data = {
       model: "gpt-3.5-turbo",
@@ -68,30 +68,46 @@ export default function Chat(): React.JSX.Element {
         },
         body: JSON.stringify(data),
     };
-    
+  
     const response = await fetch(endpoint, options)
     return response
   }
-  const saveData = async () => {
-
+  const saveData = async (props : chat) => {
+    const query = {
+      userId: props.userId,
+      createdAt: props.createdAt,
+      question: props.question,
+      answer: props.answer
+    }
+    const response = await fetch("/api/createChat", {
+      method: "POST",
+      headers: {
+      "Content-Type": "application/json"
+      },
+      body: JSON.stringify(query)
+    });
+    
+    const data = await response.json();
   }
 
   const handleSubmit = async (event : any) => {
     event.preventDefault()
-    
-    const response = await getAnwer()
+    setLoading(true);
+    const response = await getAnswer()
 
     if (response.ok){
       const result = await response.json()
 
-      const chatCompletion = {
-        id: currentId.id,
+      const chatCompletion : chat = {
+        userId: currentId.id,
         createdAt: result.created,
-        req: question,
-        res: result.choices[0].message.content
+        question: question,
+        answer: result.choices[0].message.content
       }
       setDatas([...datas, chatCompletion])
       setQuestion(" ")
+      setLoading(false);
+      const db = await saveData(chatCompletion)
     }
     else{
       throw new Error(response.statusText)
@@ -102,7 +118,8 @@ export default function Chat(): React.JSX.Element {
     <>
       <Header
         isLoged={true}
-        inChat={true}/>
+        inChat={true}
+        userId={currentId.id}/>
       <Box
         display='flex'
         justifyContent='center'>
@@ -125,11 +142,11 @@ export default function Chat(): React.JSX.Element {
                       }}
                       >
                       <Typography
-                        key={'req'+data.id}
+                        key={'req'+data.userId}
                         sx={{
                           p: 1,
                           m: 2,
-                          bgcolor: '#D65A31',
+                          bgcolor: 'primary.main',
                           boxShadow: 2,
                           borderRadius: 2,
                           minWidth: '5vw',
@@ -140,7 +157,7 @@ export default function Chat(): React.JSX.Element {
                           justifyContent: 'center',
                           alignItems: 'center'
                         }}>
-                        {data.req}
+                        {data.question}
                       </Typography>
                     </Box>
                     <Box
@@ -150,7 +167,7 @@ export default function Chat(): React.JSX.Element {
                       }}
                       >
                       <Typography 
-                        key={'res'+data.id}
+                        key={'res'+data.userId}
                         
                         sx={{
                           p: 1,
@@ -166,7 +183,7 @@ export default function Chat(): React.JSX.Element {
                           justifyContent: 'center',
                           alignItems: 'center'
                         }}>
-                        {data.res.split('\n').map(function(item) {
+                        {data.answer.split('\n').map(function(item) {
                           return (
                             <>
                             {item}
@@ -180,27 +197,42 @@ export default function Chat(): React.JSX.Element {
                 ))}
         </Stack>
       </Box>
-      
-      <FormControl
-        component="form" 
-        onSubmit={handleSubmit}
+      <Box
         sx={{
           display: 'flex',
-          flexDirection: 'row',
-          justifyContent:'space-evenly',
-          width: '100%',
-          mb: 1,
-          position: 'absolute',
-          bottom: 0
-        }}>
-        <TextField
-          sx = {{width: '80%'}}
-          value={question}
-          onChange={(e) => setQuestion(e.target.value)}
-          id="question"
-          variant="filled"
-          autoComplete='off'/>
-      </FormControl>
+          alignItems: 'center',
+          justifyContent: 'center'
+          }}>
+        <FormControl
+          component="form" 
+          onSubmit={handleSubmit}
+          sx={{
+            display: 'flex',
+            flexDirection: 'row',
+            justifyContent:'space-evenly',
+            width: '100%',
+            mb: 1,
+            position: 'absolute',
+            bottom: 0
+          }}>
+          <TextField
+            sx = {{width: '80%'}}
+            value={question}
+            disabled={loading}
+            onChange={(e) => setQuestion(e.target.value)}
+            id="question"
+            variant="filled"
+            autoComplete='off'/>
+        </FormControl>
+        {loading && (
+          <CircularProgress
+            size={50}
+            sx={{
+              position: 'absolute',
+            }}
+          />
+        )}
+      </Box>
       <Backdrop
         sx={{ color: '#fff'}}
         open={!currentId.isExist}
@@ -235,12 +267,16 @@ export default function Chat(): React.JSX.Element {
                 letterSpacing: '.3rem',
                 color: 'inherit',
                 textDecoration: 'none',
+                "&:hover": {
+                  color: 'primary.main',
+                }
             }}
           >
               LOGIN
           </Typography>
           
         </Stack>
+
       </Backdrop>
     </>
   )

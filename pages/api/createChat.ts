@@ -2,19 +2,20 @@ import type { NextApiRequest, NextApiResponse } from 'next'
 import connectToDatabase from './connectDB';
 import { Db } from 'mongodb'
 
-type User = {
-    id?: string
-    email: string
-    password: string
+type Chat = {
+    userId: string
+    question: string
+    answer: string
+    createdAt: string
 }
 
 export default async function handler(
     req: NextApiRequest,
     res: NextApiResponse
 ) {
-    const {email, password} : User = req.body
+    const {userId ,question ,answer ,createdAt} : Chat = req.body
 
-    if (!email|| !password) {
+    if (!userId || !question || !answer || !createdAt) {
         res.status(400).json({ message: 'Invalid request body' })
         return
     }
@@ -22,9 +23,11 @@ export default async function handler(
     const db : Db = await connectToDatabase();
 
     try {
-        const result = await db.collection('user').insertOne({
-            email,
-            password
+        const result = await db.collection('chats').insertOne({
+            userId,
+            createdAt,
+            question,
+            answer,
         });
 
         res.status(201).json(result);

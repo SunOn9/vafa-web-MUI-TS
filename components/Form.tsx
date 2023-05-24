@@ -118,9 +118,6 @@ export default function Form(props: {isSigned: boolean}) {
 
     return id
   }
-  const updateId = () =>{
-    
-  }
   const checkSignIn = async () => {
     const query = {
       email: email
@@ -256,7 +253,8 @@ export default function Form(props: {isSigned: boolean}) {
         <Box
             sx={{
               display: 'flex',
-              alignItems: 'center'
+              alignItems: 'center',
+              justifyContent: 'center'
               }}
         >
           {!props.isSigned ?  (

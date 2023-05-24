@@ -1,5 +1,5 @@
 import { AppBar, Box, Toolbar, Typography } from '@mui/material'
-import React from 'react'
+import React, { useState } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/router';
 
@@ -10,27 +10,39 @@ export default function Header(props : {
         inSignIn? : boolean,
         inChat? : boolean,
         inHome? : boolean,
+        userId? : string | string[] | undefined,
     })
 {
     const router = useRouter()
+
+    const currentId = props.userId
 
     //handle logout button event 
     const handleLogout = (event: React.MouseEvent<HTMLElement>): void => {
         event.preventDefault()
 
-        router.push('/')
+        router.push({
+          pathname: '/',
+          query: { id: '' }
+          }, '/')
     }
     //handle chat button event 
     const handleChat = (event: React.MouseEvent<HTMLElement>): void => {
         event.preventDefault()
 
-        router.push('/chat')
+        router.push({
+          pathname: '/chat',
+          query: { id: currentId }
+          }, '/chat')
     }
     //handle history button event 
     const handleHistory = (event: React.MouseEvent<HTMLElement>): void => {
         event.preventDefault()
-
-        router.push('/history')
+        console.log(currentId)
+        router.push({
+            pathname: '/history',
+            query: { id: currentId }
+            }, '/history')
     }
     
     return (
@@ -67,6 +79,9 @@ export default function Header(props : {
                                         letterSpacing: '.3rem',
                                         color: 'inherit',
                                         textDecoration: 'none',
+                                        "&:hover": {
+                                            color: 'primary.main',
+                                          }
                                     }}
                                 >
                                     HOME
@@ -85,6 +100,9 @@ export default function Header(props : {
                                         letterSpacing: '.3rem',
                                         color: 'inherit',
                                         textDecoration: 'none',
+                                        "&:hover": {
+                                            color: 'primary.main',
+                                          }
                                     }}
                                 >
                                     LOGIN
@@ -103,6 +121,9 @@ export default function Header(props : {
                                         letterSpacing: '.3rem',
                                         color: 'inherit',
                                         textDecoration: 'none',
+                                        "&:hover": {
+                                            color: 'primary.main',
+                                          }
                                     }}
                                 >
                                     SIGN-IN
@@ -124,6 +145,9 @@ export default function Header(props : {
                                         letterSpacing: '.3rem',
                                         color: 'inherit',
                                         textDecoration: 'none',
+                                        "&:hover": {
+                                            color: 'primary.main',
+                                          }
                                     }}
                                     onClick={handleChat}
                                 >
@@ -143,6 +167,9 @@ export default function Header(props : {
                                         letterSpacing: '.3rem',
                                         color: 'inherit',
                                         textDecoration: 'none',
+                                        "&:hover": {
+                                            color: 'primary.main',
+                                          }
                                     }}
                                     onClick={handleHistory}
                                 >
@@ -161,6 +188,9 @@ export default function Header(props : {
                                     letterSpacing: '.3rem',
                                     color: 'inherit',
                                     textDecoration: 'none',
+                                    "&:hover": {
+                                        color: 'primary.main',
+                                      }
                                 }}
                                 onClick={handleLogout}
                             >
