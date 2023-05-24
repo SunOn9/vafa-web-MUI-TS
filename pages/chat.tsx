@@ -1,10 +1,10 @@
 import React, { useEffect } from 'react'
 import { useState } from 'react';
 import { useRouter } from 'next/router';
-import { ParsedUrlQuery } from 'querystring';
-
 import Header from '@/components/Header'
-import { Typography, Stack, TextField, Paper, FormControl} from '@mui/material'
+import {Box, Typography, Stack, TextField, Paper, FormControl, Backdrop} from '@mui/material'
+import Link from 'next/link';
+
 
 
 interface chat {
@@ -14,23 +14,41 @@ interface chat {
   res: string
 }
 
-interface PostPageQuery extends ParsedUrlQuery {
-  id: string;
-  slug?: string;
+interface currentId {
+  id: any;
+  isExist : boolean;
 }
 
 export default function Chat(): React.JSX.Element {
   const [question , setQuestion] = useState('')
   const [datas, setDatas] = useState<any>([])
-  const [currentId, setCurrentId] = useState('')
+  const [currentId, setCurrentId] = useState<currentId>({
+    id: '',
+    isExist: false
+  })
+  const [loading, setLoading] = useState(false)
 
   const router = useRouter()
-  const query = router.query as PostPageQuery;
+  const { query } = router
+  
+  useEffect(() => handleId(), []);
 
-  useEffect(() => setCurrentId(query.id), [query.id]);
-
+  const handleId = () => {
+    if (query.id === undefined){
+      setCurrentId({
+        id: '',
+        isExist: false
+      })
+    }
+    else {
+      setCurrentId({
+        id: query.id,
+        isExist: true
+      })
+    }
+  }
   //get the answer from AI
-  const getAnwer = async (question  : string) =>{
+  const getAnwer = async () =>{
     const endpoint = 'https://api.pawan.krd/v1/chat/completions';
     const data = {
       model: "gpt-3.5-turbo",
@@ -54,17 +72,20 @@ export default function Chat(): React.JSX.Element {
     const response = await fetch(endpoint, options)
     return response
   }
+  const saveData = async () => {
+
+  }
 
   const handleSubmit = async (event : any) => {
     event.preventDefault()
     
-    const response = await getAnwer(question)
+    const response = await getAnwer()
 
     if (response.ok){
       const result = await response.json()
 
       const chatCompletion = {
-        id: currentId,
+        id: currentId.id,
         createdAt: result.created,
         req: question,
         res: result.choices[0].message.content
@@ -79,57 +100,148 @@ export default function Chat(): React.JSX.Element {
 
   return (
     <>
-        <Header
-          isLoged={true}
-          inChat={true}/>
-          
+      <Header
+        isLoged={true}
+        inChat={true}/>
+      <Box
+        display='flex'
+        justifyContent='center'>
         <Stack
           direction="column"
-          justifyContent="flex-start"
-          alignItems="center"
           component={Paper}
-          spacing={1}
           sx={{
-            
+            width: '80vw',
+            height: '81vh',
+            overflow: 'auto'
           }}>
+            
             {datas.length > 0 &&
                 datas.map((data:chat) => (
                   <>
-                    <Typography
-                      key={'req'+data.id}
+                    <Box
                       sx={{
-                        p:2
-                      }}>
-                      {data.req}
-                    </Typography>
-                    <Typography 
-                      key={'res'+data.id}
+                        display: 'flex',
+                        justifyContent: 'flex-end',
+                      }}
+                      >
+                      <Typography
+                        key={'req'+data.id}
+                        sx={{
+                          p: 1,
+                          m: 2,
+                          bgcolor: '#D65A31',
+                          boxShadow: 2,
+                          borderRadius: 2,
+                          minWidth: '5vw',
+                          maxWidth: '30vw',
+                          textAlign: 'justify',
+                          fontSize: 18,
+                          display: 'flex',
+                          justifyContent: 'center',
+                          alignItems: 'center'
+                        }}>
+                        {data.req}
+                      </Typography>
+                    </Box>
+                    <Box
                       sx={{
-                        p: 2
-                      }}>
-                      {data.res.split('\n').map(function(item) {
-                        return (
-                          <>
-                          {item}
-                          <br/>
-                          </>
-                        )
-                      })}
-                    </Typography>
+                        display: 'flex',
+                        justifyContent: 'flex-start',
+                      }}
+                      >
+                      <Typography 
+                        key={'res'+data.id}
+                        
+                        sx={{
+                          p: 1,
+                          m: 2,
+                          bgcolor: 'background.paper',
+                          boxShadow: 2,
+                          borderRadius: 2,
+                          minWidth: '10vw',
+                          maxWidth: '50vw',
+                          textAlign: 'justify',
+                          fontSize: 18,
+                          display: 'flex',
+                          justifyContent: 'center',
+                          alignItems: 'center'
+                        }}>
+                        {data.res.split('\n').map(function(item) {
+                          return (
+                            <>
+                            {item}
+                            <br/>
+                            </>
+                          )
+                        })}
+                      </Typography>
+                    </Box>  
                   </>
                 ))}
         </Stack>
-        <FormControl
-          component="form" 
-          onSubmit={handleSubmit}>
-          <TextField
-            value={question}
-            onChange={(e) => setQuestion(e.target.value)}
-            id="question"
-            variant="filled"
-            autoComplete='off'/>
-        </FormControl>
-
+      </Box>
+      
+      <FormControl
+        component="form" 
+        onSubmit={handleSubmit}
+        sx={{
+          display: 'flex',
+          flexDirection: 'row',
+          justifyContent:'space-evenly',
+          width: '100%',
+          mb: 1,
+          position: 'absolute',
+          bottom: 0
+        }}>
+        <TextField
+          sx = {{width: '80%'}}
+          value={question}
+          onChange={(e) => setQuestion(e.target.value)}
+          id="question"
+          variant="filled"
+          autoComplete='off'/>
+      </FormControl>
+      <Backdrop
+        sx={{ color: '#fff'}}
+        open={!currentId.isExist}
+      >
+        <Stack
+          sx={{
+            display: 'flex',
+            alignItems: 'center',
+            p: 10,
+            bgcolor: 'background.paper',
+            boxShadow: 2,
+            borderRadius: 2,
+            minWidth: 300,
+          }}>
+          <Typography
+            sx={{
+              fontFamily: 'monospace',
+              fontWeight: 700,
+              fontSize: 20,
+            }}>
+            Please login before continuing
+          </Typography>
+          <Typography
+            mt={5}
+            variant="h6"
+            noWrap
+            component={Link}
+            href="/login"
+            sx={{
+                fontFamily: 'monospace',
+                fontWeight: 700,
+                letterSpacing: '.3rem',
+                color: 'inherit',
+                textDecoration: 'none',
+            }}
+          >
+              LOGIN
+          </Typography>
+          
+        </Stack>
+      </Backdrop>
     </>
   )
 }

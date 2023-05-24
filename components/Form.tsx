@@ -1,51 +1,63 @@
 import React from 'react'
-import { Box, TextField, FormControl, Button, Alert, Snackbar, SnackbarOrigin } from '@mui/material'
+import { Box, TextField, FormControl, Button, Alert, Snackbar, SnackbarOrigin, CircularProgress } from '@mui/material'
 import { useRouter } from 'next/router'
 import {useState} from 'react'
-import { Message } from '@mui/icons-material';
+import { ObjectId } from 'mongodb';
 
 export interface State extends SnackbarOrigin {
   open: boolean;
   message: string;
+  email?: boolean;
+  password?: boolean;
+  confirmPassword?: boolean;
 }
 
 export default function Form(props: {isSigned: boolean}) {
-  const router = useRouter()
-
-  const [userId, setUserId] = useState('')
+  const {push} = useRouter()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
   const [error, setError] = useState<State>({
     open: false,
+    email: false,
+    password: false,
+    confirmPassword: false,
     message: '',
     vertical: 'top',
     horizontal: 'center',})
+  const [success, setSuccess] = useState(false)
   const [loading, setLoading] = useState(false)
 
   const regex = new RegExp("^[a-zA-Z0-9]+(?:\.[a-zA-Z0-9]+)*@[a-zA-Z0-9]+(?:\.[a-zA-Z0-9]+)*$");
+
+  const onCloseSuccess = () => {
+    setSuccess(false)
+  }
   const onClose = () => {
     setError({
       ...error,
       open: false,
+      email: false,
+      password: false,
+      confirmPassword: false,
       message: '',
       })
   }
   const validateLogin = () => {
     if (!email) {
-      setError({...error, open: true, message: 'Email is required'})
+      setError({...error, email: true, open: true, message: 'Email is required'})
       return false
     }
     if(!regex.test(email)) {
-      setError({...error, open: true, message:'Email is not valid'})
+      setError({...error, email: true, open: true, message:'Email is not valid'})
       return false
     }
     if (password.length < 8) {
-      setError({...error, open: true, message:'Password must be at least 8 characters'})
+      setError({...error, password: true, open: true, message:'Password must be at least 8 characters'})
       return false
     }
     if (!password) {
-      setError({...error, open: true, message:'Password is required'})
+      setError({...error, password: true, open: true, message:'Password is required'})
       return false
     }
     return true
@@ -53,44 +65,134 @@ export default function Form(props: {isSigned: boolean}) {
 
   const validateSignIn = () => {
     if (!email) {
-      setError({...error, open: true, message:'Email is required'})
+      setError({...error, email: true, open: true, message:'Email is required'})
       return false
     }
     if(!regex.test(email)) {
-      setError({...error, open: true, message:'Email is not valid'})
+      setError({...error, email: true, open: true, message:'Email is not valid'})
       return false
     }
     if (password.length < 8) {
-      setError({...error, open: true, message:'Password must be at least 8 characters'})
+      setError({...error,  password: true, open: true, message:'Password must be at least 8 characters'})
       return false
     }
     if (!password) {
-      setError({...error, open: true, message:'Password is required'})
+      setError({...error,  password: true, open: true, message:'Password is required'})
       return false
     }
     if (!confirmPassword) {
-      setError({...error, open: true, message:'Confirm password is required'})
+      setError({...error,  confirmPassword: true, open: true, message:'Confirm password is required'})
       return false
     }
     if (password !== confirmPassword) {
-      setError({...error, open: true, message:'Passwords do not match'})
+      setError({...error, password: true, confirmPassword: true, open: true, message:'Passwords do not match'})
       return false
     }
     return true
   }
 
-  const handleLogin = (event  : any) =>{
-    event.preventDefault();
+  const checkLogin = async () => {
+    const query = {
+      email: email
+    }
+    const response = await fetch("/api/findUser", {
+      method: "POST",
+      headers: {
+      "Content-Type": "application/json"
+      },
+      body: JSON.stringify(query)
+    });
+    
 
-    {validateLogin() &&
-      setLoading(true)}
+    const data = await response.json();
+
+    if (data == null) {
+      setError({...error, email: true, open: true, message: 'User does not exist'})
+      return -1
+    }
+    if (data.password !== password) {
+      setError({...error, password: true, open: true, message: 'Password does not match'})
+      return -1
+    }
+    const id : string = data._id.toString()
+
+    return id
+  }
+  const updateId = () =>{
     
   }
-  const handleSignin = (event: any) => {
+  const checkSignIn = async () => {
+    const query = {
+      email: email
+    }
+    const response = await fetch("/api/findUser", {
+      method: "POST",
+      headers: {
+      "Content-Type": "application/json"
+      },
+      body: JSON.stringify(query)
+    });
+    
+    const data = await response.json();
+
+    if (data == null) {
+      return true
+    }
+    else {
+      try {
+        const thisId = data._id
+        setError({...error, email: true, open: true, message: 'This email is registered'});
+        return false
+      }
+      catch{
+        setError({...error, open: true, message: 'Something went wrong'});
+        return false
+      }
+    }
+  }
+
+  const createUser = async () => {
+    const query = {
+      email: email,
+      password: password
+    }
+    const response = await fetch("/api/createUser", {
+      method: "POST",
+      headers: {
+      "Content-Type": "application/json"
+      },
+      body: JSON.stringify(query)
+    });
+    
+    const data = await response.json();
+  }
+
+  const handleLogin = async (event  : any) =>{
     event.preventDefault();
 
-    {validateSignIn() &&
-      setLoading(true)}
+    if (validateLogin()){
+      setLoading(true);
+      const userId = await checkLogin()
+      if (userId !== -1){
+        push({
+          pathname: '/chat',
+          query: { id: userId }
+          }, '/chat')
+      }
+      setLoading(false);
+    }
+  }
+  const handleSignin = async (event: any) => {
+    event.preventDefault();
+
+    if (validateSignIn()){
+      setLoading(true);
+      if (await checkSignIn()){
+        createUser()
+        setSuccess(true)
+      }
+      setLoading(false);
+    }
     
   }
   
@@ -117,8 +219,9 @@ export default function Form(props: {isSigned: boolean}) {
           label="Email"
           variant="outlined"
           required
-          {...loading && ({disabled: true})}
+          disabled={loading}
           onChange={(e)=>setEmail(e.target.value)}
+          error={error.email}
           sx={{
             m: 1
           }}/>
@@ -129,8 +232,9 @@ export default function Form(props: {isSigned: boolean}) {
           label="Password"
           variant="outlined"
           required
-          {...loading && ({disabled: true})}
+          disabled={loading}
           onChange={(e)=>setPassword(e.target.value)}
+          error={error.password}
           sx={{
             m: 1
           }}/>
@@ -142,44 +246,60 @@ export default function Form(props: {isSigned: boolean}) {
             label="Confirm password"
             variant="outlined"
             required
-            {...loading && ({disabled: true})}
+            disabled={loading}
             onChange={(e)=>setConfirmPassword(e.target.value)}
+            error={error.confirmPassword}
             sx={{
               m: 1
             }}/>
         }
-        {!props.isSigned ?  (
-          <>
-            <Button
-            type="submit"
-            variant="contained"
-            {...loading && ({disabled: true})}
+        <Box
             sx={{
-              mt: 2,
-            }}>
-            Sign In
-          </Button>
-          </>
-        ):(
-          <>
+              display: 'flex',
+              alignItems: 'center'
+              }}
+        >
+          {!props.isSigned ?  (
+              <Button
+                type="submit"
+                variant="contained"
+                disabled={loading}
+                sx={{
+                  mt: 2,
+                }}>
+                Sign In
+            </Button>
+          ):(
             <Button
               type="submit"
               variant="contained"
-              {...loading && ({disabled: true})}
+              disabled={loading}
               sx={{
                 mt: 2,
               }}>
               Login
             </Button>
-          </>
-        )}
+          )}
+          {loading && (
+                  <CircularProgress
+                    size={50}
+                    sx={{
+                      position: 'absolute',
+                    }}
+                  />
+                )}
+        </Box>
       </FormControl>
-      <Snackbar open={error.open} onClose={onClose} autoHideDuration={1000}>
+      <Snackbar open={error.open} onClose={onClose} autoHideDuration={2000}>
         <Alert severity="warning" sx={{ width: '100%' }}>
           {error.message}
+        </Alert>
+      </Snackbar>
+      <Snackbar open={success} onClose={onCloseSuccess} autoHideDuration={2000}>
+        <Alert severity="success" sx={{ width: '100%' }}>
+          Account successfully created
         </Alert>
       </Snackbar>
     </> 
   )
 }
-
