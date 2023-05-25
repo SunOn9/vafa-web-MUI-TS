@@ -19,9 +19,9 @@ export default async function handler(
     const db : Db = await connectToDatabase();
 
     const result = await db.collection('chats')
-    .find(query)
-    .sort({ createdAt: -1 })
-    .toArray();
+        .find(query)
+        .sort({ createdAt: -1 })
+        .toArray();
 
     res.status(200).json(result);
 }

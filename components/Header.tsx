@@ -22,18 +22,18 @@ export default function Header(props : {
         event.preventDefault()
 
         router.push({
-          pathname: '/',
-          query: { id: '' }
-          }, '/')
+            pathname: '/',
+            query: { id: '' }
+        }, '/')
     }
     //handle chat button event 
     const handleChat = (event: React.MouseEvent<HTMLElement>): void => {
         event.preventDefault()
 
         router.push({
-          pathname: '/chat',
-          query: { id: currentId }
-          }, '/chat')
+            pathname: '/chat',
+            query: { id: currentId }
+        }, '/chat')
     }
     //handle history button event 
     const handleHistory = (event: React.MouseEvent<HTMLElement>): void => {
@@ -42,7 +42,7 @@ export default function Header(props : {
         router.push({
             pathname: '/history',
             query: { id: currentId }
-            }, '/history')
+        }, '/history')
     }
     
     return (
@@ -81,7 +81,7 @@ export default function Header(props : {
                                         textDecoration: 'none',
                                         "&:hover": {
                                             color: 'primary.main',
-                                          }
+                                        }
                                     }}
                                 >
                                     HOME
@@ -102,7 +102,7 @@ export default function Header(props : {
                                         textDecoration: 'none',
                                         "&:hover": {
                                             color: 'primary.main',
-                                          }
+                                        }
                                     }}
                                 >
                                     LOGIN
@@ -123,7 +123,7 @@ export default function Header(props : {
                                         textDecoration: 'none',
                                         "&:hover": {
                                             color: 'primary.main',
-                                          }
+                                        }
                                     }}
                                 >
                                     SIGN-IN
@@ -147,7 +147,7 @@ export default function Header(props : {
                                         textDecoration: 'none',
                                         "&:hover": {
                                             color: 'primary.main',
-                                          }
+                                        }
                                     }}
                                     onClick={handleChat}
                                 >
@@ -169,7 +169,7 @@ export default function Header(props : {
                                         textDecoration: 'none',
                                         "&:hover": {
                                             color: 'primary.main',
-                                          }
+                                        }
                                     }}
                                     onClick={handleHistory}
                                 >
@@ -190,7 +190,7 @@ export default function Header(props : {
                                     textDecoration: 'none',
                                     "&:hover": {
                                         color: 'primary.main',
-                                      }
+                                    }
                                 }}
                                 onClick={handleLogout}
                             >

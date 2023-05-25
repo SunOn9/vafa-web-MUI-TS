@@ -55,18 +55,18 @@ export default function Chat(): React.JSX.Element {
       max_tokens: 3800,
       messages: [
         {
-            role: "user",
-            content: question,
+          role: "user",
+          content: question,
         },
       ],
     };
     const options = {
-        method: 'POST',
-        headers: {
+      method: 'POST',
+      headers: {
         'Authorization': "Bearer pk-tvCyIlXThuxlWPDsqwOJYTxLSQevKkXCrEANoIongjRdXbWh",
         'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(data),
+      },
+      body: JSON.stringify(data),
     };
   
     const response = await fetch(endpoint, options)
@@ -82,7 +82,7 @@ export default function Chat(): React.JSX.Element {
     const response = await fetch("/api/createChat", {
       method: "POST",
       headers: {
-      "Content-Type": "application/json"
+        "Content-Type": "application/json"
       },
       body: JSON.stringify(query)
     });
@@ -122,7 +122,8 @@ export default function Chat(): React.JSX.Element {
         userId={currentId.id}/>
       <Box
         display='flex'
-        justifyContent='center'>
+        justifyContent='center'
+      >
         <Stack
           direction="column"
           component={Paper}
@@ -130,79 +131,82 @@ export default function Chat(): React.JSX.Element {
             width: '80vw',
             height: '81vh',
             overflow: 'auto'
-          }}>
+          }}
+        >
             
-            {datas.length > 0 &&
-                datas.map((data:chat) => (
-                  <>
-                    <Box
-                      sx={{
-                        display: 'flex',
-                        justifyContent: 'flex-end',
-                      }}
-                      >
-                      <Typography
-                        key={'req'+data.userId}
-                        sx={{
-                          p: 1,
-                          m: 2,
-                          bgcolor: 'primary.main',
-                          boxShadow: 2,
-                          borderRadius: 2,
-                          minWidth: '5vw',
-                          maxWidth: '50vw',
-                          textAlign: 'justify',
-                          fontSize: 18,
-                          display: 'flex',
-                          justifyContent: 'center',
-                          alignItems: 'center'
-                        }}>
-                        {data.question}
-                      </Typography>
-                    </Box>
-                    <Box
-                      sx={{
-                        display: 'flex',
-                        justifyContent: 'flex-start',
-                      }}
-                      >
-                      <Typography 
-                        key={'res'+data.userId}
-                        
-                        sx={{
-                          p: 1,
-                          m: 2,
-                          bgcolor: 'background.paper',
-                          boxShadow: 2,
-                          borderRadius: 2,
-                          minWidth: '10vw',
-                          maxWidth: '70vw',
-                          textAlign: 'left',
-                          fontSize: 18,
-                          display: 'flex',
-                          justifyContent: 'center',
-                          alignItems: 'center'
-                        }}>
-                        {data.answer.split('\n').map(function(item) {
-                          return (
-                            <>
-                            {item}
-                            <br/>
-                            </>
-                          )
-                        })}
-                      </Typography>
-                    </Box>  
-                  </>
-                ))}
+          {datas.length > 0 &&
+            datas.map((data:chat) => (
+              <>
+                <Box
+                  sx={{
+                    display: 'flex',
+                    justifyContent: 'flex-end',
+                  }}
+                  >
+                  <Typography
+                    key={'req'+data.userId}
+                    sx={{
+                      p: 1,
+                      m: 2,
+                      bgcolor: 'primary.main',
+                      boxShadow: 2,
+                      borderRadius: 2,
+                      minWidth: '5vw',
+                      maxWidth: '50vw',
+                      textAlign: 'justify',
+                      fontSize: 18,
+                      display: 'flex',
+                      justifyContent: 'center',
+                      alignItems: 'center'
+                    }}>
+                    {data.question}
+                  </Typography>
+                </Box>
+                <Box
+                  sx={{
+                    display: 'flex',
+                    justifyContent: 'flex-start',
+                  }}
+                >
+                  <Typography 
+                    key={'res'+data.userId}
+                    sx={{
+                      p: 1,
+                      m: 2,
+                      bgcolor: 'background.paper',
+                      boxShadow: 2,
+                      borderRadius: 2,
+                      minWidth: '10vw',
+                      maxWidth: '70vw',
+                      textAlign: 'left',
+                      fontSize: 18,
+                      display: 'flex',
+                      justifyContent: 'center',
+                      alignItems: 'center'
+                    }}
+                  >
+                    {data.answer.split('\n').map(function(item) {
+                      return (
+                        <>
+                        {item}
+                        <br/>
+                        </>
+                      )
+                    })}
+                  </Typography>
+                </Box>  
+              </>
+            ))
+          }
         </Stack>
       </Box>
       <Box
         sx={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center'
-          }}>
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center'
+          }}
+      >
         <FormControl
           component="form" 
           onSubmit={handleSubmit}
@@ -214,7 +218,8 @@ export default function Chat(): React.JSX.Element {
             mb: 0,
             position: 'absolute',
             bottom: 0
-          }}>
+          }}
+        >
           <TextField
             sx = {{width: '80%'}}
             value={question}
@@ -252,7 +257,8 @@ export default function Chat(): React.JSX.Element {
               fontFamily: 'monospace',
               fontWeight: 700,
               fontSize: 20,
-            }}>
+            }}
+          >
             Please login before continuing
           </Typography>
           <Typography
@@ -272,11 +278,9 @@ export default function Chat(): React.JSX.Element {
                 }
             }}
           >
-              LOGIN
+            LOGIN
           </Typography>
-          
         </Stack>
-
       </Backdrop>
     </>
   )

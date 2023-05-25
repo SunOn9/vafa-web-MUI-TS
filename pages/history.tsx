@@ -6,7 +6,7 @@ import { useRouter } from 'next/router'
 
 interface chat {
   userId : string,
-  createdAt: string  ,
+  createdAt: string,
   question: string,
   answer: string  
 }
@@ -41,7 +41,7 @@ export default function History(): React.JSX.Element {
     const response = await fetch('/api/findHistoryById', {
       method: "POST",
       headers: {
-      "Content-Type": "application/json"
+        "Content-Type": "application/json"
       },
       body: JSON.stringify(dataQuery)
     })
@@ -57,95 +57,96 @@ export default function History(): React.JSX.Element {
           inHistory={true}
           userId={query.id}/>
         <Box
-        display='flex'
-        justifyContent='center'
-        alignContent='center'>
+          display='flex'
+          justifyContent='center'
+          alignContent='center'>
         {loading && (
-            <CircularProgress
-              size={200}
-              sx={{
-                position: 'absolute',
-                top: '50%',
-                left: '50%',
-                marginTop: -12,
-                marginLeft: -12,
-              }}
-            />
-          )}
+          <CircularProgress
+            size={200}
+            sx={{
+              position: 'absolute',
+              top: '50%',
+              left: '50%',
+              marginTop: -12,
+              marginLeft: -12,
+            }}
+          />
+        )}
         
-          <Stack
+        <Stack
           direction="column"
           component={Paper}
           sx={{
             width: '80vw',
             height: '90vh',
             overflow: 'auto'
-          }}>
-            
-            {datas &&
-                datas.map((data:chat) => (
-                  <>
-                    <Box
-                      sx={{
-                        display: 'flex',
-                        justifyContent: 'flex-end',
-                      }}
-                      >
-                      <Typography
-                        key={'req'+data.userId}
-                        sx={{
-                          p: 1,
-                          mr: 2,
-                          mb: 1,
-                          bgcolor: 'primary.main',
-                          boxShadow: 2,
-                          borderRadius: 2,
-                          minWidth: '5vw',
-                          maxWidth: '50vw',
-                          textAlign: 'justify',
-                          fontSize: 18,
-                          display: 'flex',
-                          justifyContent: 'center',
-                          alignItems: 'center'
-                        }}>
-                        {data.question}
-                      </Typography>
-                    </Box>
-                    <Box
-                      sx={{
-                        display: 'flex',
-                        justifyContent: 'flex-start',
-                      }}
-                      >
-                      <Typography 
-                        key={'res'+data.userId}
-                        
-                        sx={{
-                          p: 1,
-                          m: 2,
-                          bgcolor: 'background.paper',
-                          boxShadow: 2,
-                          borderRadius: 2,
-                          minWidth: '10vw',
-                          maxWidth: '70vw',
-                          textAlign: 'left',
-                          fontSize: 18,
-                          display: 'flex',
-                          justifyContent: 'center',
-                          alignItems: 'center'
-                        }}>
-                        {data.answer.split('\n').map(function(item) {
-                          return (
-                            <>
-                            {item}
-                            <br/>
-                            </>
-                          )
-                        })}
-                      </Typography>
-                    </Box>  
-                  </>
-                ))}
+          }}
+        >
+          
+        {datas &&
+            datas.map((data:chat) => (
+              <>
+                <Box
+                  sx={{
+                    display: 'flex',
+                    justifyContent: 'flex-end',
+                  }}
+                  >
+                  <Typography
+                    key={'req'+data.userId}
+                    sx={{
+                      p: 1,
+                      mr: 2,
+                      mb: 1,
+                      bgcolor: 'primary.main',
+                      boxShadow: 2,
+                      borderRadius: 2,
+                      minWidth: '5vw',
+                      maxWidth: '50vw',
+                      textAlign: 'justify',
+                      fontSize: 18,
+                      display: 'flex',
+                      justifyContent: 'center',
+                      alignItems: 'center'
+                    }}>
+                    {data.question}
+                  </Typography>
+                </Box>
+                <Box
+                  sx={{
+                    display: 'flex',
+                    justifyContent: 'flex-start',
+                  }}
+                  >
+                  <Typography 
+                    key={'res'+data.userId}
+                    
+                    sx={{
+                      p: 1,
+                      m: 2,
+                      bgcolor: 'background.paper',
+                      boxShadow: 2,
+                      borderRadius: 2,
+                      minWidth: '10vw',
+                      maxWidth: '70vw',
+                      textAlign: 'left',
+                      fontSize: 18,
+                      display: 'flex',
+                      justifyContent: 'center',
+                      alignItems: 'center'
+                    }}>
+                    {data.answer.split('\n').map(function(item) {
+                      return (
+                        <>
+                          {item}
+                          <br/>
+                        </>
+                      )
+                    })}
+                  </Typography>
+                </Box>  
+              </>
+            ))}
         </Stack>
         
         <Backdrop
@@ -177,21 +178,19 @@ export default function History(): React.JSX.Element {
               component={Link}
               href="/login"
               sx={{
-                  fontFamily: 'monospace',
-                  fontWeight: 700,
-                  letterSpacing: '.3rem',
-                  color: 'inherit',
-                  textDecoration: 'none',
-                  "&:hover": {
-                    color: 'primary.main',
-                  }
+                fontFamily: 'monospace',
+                fontWeight: 700,
+                letterSpacing: '.3rem',
+                color: 'inherit',
+                textDecoration: 'none',
+                "&:hover": {
+                  color: 'primary.main',
+                }
               }}
             >
-                LOGIN
+              LOGIN
             </Typography>
-            
           </Stack>
-
         </Backdrop>
       </Box>
     </>

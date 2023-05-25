@@ -2,7 +2,6 @@ import React from 'react'
 import { Box, TextField, FormControl, Button, Alert, Snackbar, SnackbarOrigin, CircularProgress } from '@mui/material'
 import { useRouter } from 'next/router'
 import {useState} from 'react'
-import { ObjectId } from 'mongodb';
 
 export interface State extends SnackbarOrigin {
   open: boolean;
@@ -24,7 +23,8 @@ export default function Form(props: {isSigned: boolean}) {
     confirmPassword: false,
     message: '',
     vertical: 'top',
-    horizontal: 'center',})
+    horizontal: 'center',
+  })
   const [success, setSuccess] = useState(false)
   const [loading, setLoading] = useState(false)
 
@@ -35,12 +35,12 @@ export default function Form(props: {isSigned: boolean}) {
   }
   const onClose = () => {
     setError({
-      ...error,
-      open: false,
-      email: false,
-      password: false,
-      confirmPassword: false,
-      message: '',
+        ...error,
+        open: false,
+        email: false,
+        password: false,
+        confirmPassword: false,
+        message: '',
       })
   }
   const validateLogin = () => {
@@ -98,7 +98,7 @@ export default function Form(props: {isSigned: boolean}) {
     const response = await fetch("/api/findUser", {
       method: "POST",
       headers: {
-      "Content-Type": "application/json"
+        "Content-Type": "application/json"
       },
       body: JSON.stringify(query)
     });
@@ -125,7 +125,7 @@ export default function Form(props: {isSigned: boolean}) {
     const response = await fetch("/api/findUser", {
       method: "POST",
       headers: {
-      "Content-Type": "application/json"
+        "Content-Type": "application/json"
       },
       body: JSON.stringify(query)
     });
@@ -156,7 +156,7 @@ export default function Form(props: {isSigned: boolean}) {
     const response = await fetch("/api/createUser", {
       method: "POST",
       headers: {
-      "Content-Type": "application/json"
+        "Content-Type": "application/json"
       },
       body: JSON.stringify(query)
     });
@@ -172,8 +172,8 @@ export default function Form(props: {isSigned: boolean}) {
       const userId = await checkLogin()
       if (userId !== -1){
         push({
-          pathname: '/chat',
-          query: { id: userId }
+            pathname: '/chat',
+            query: { id: userId }
           }, '/chat')
       }
       setLoading(false);
@@ -209,6 +209,7 @@ export default function Form(props: {isSigned: boolean}) {
           borderRadius: 2,
           minWidth: 300,
         }}
+        
       >
         <TextField 
           id="email"
@@ -251,11 +252,11 @@ export default function Form(props: {isSigned: boolean}) {
             }}/>
         }
         <Box
-            sx={{
+          sx={{
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center'
-              }}
+            }}
         >
           {!props.isSigned ?  (
               <Button
@@ -279,13 +280,13 @@ export default function Form(props: {isSigned: boolean}) {
             </Button>
           )}
           {loading && (
-                  <CircularProgress
-                    size={50}
-                    sx={{
-                      position: 'absolute',
-                    }}
-                  />
-                )}
+            <CircularProgress
+              size={50}
+              sx={{
+                position: 'absolute',
+              }}
+            />
+          )}
         </Box>
       </FormControl>
       <Snackbar open={error.open} onClose={onClose} autoHideDuration={2000}>
