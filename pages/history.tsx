@@ -18,6 +18,7 @@ export default function History(): React.JSX.Element {
   const router = useRouter()
   const { query } = router
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => handleHistory(), []);
 
   const handleHistory = () =>{

@@ -31,6 +31,7 @@ export default function Chat(): React.JSX.Element {
   const router = useRouter()
   const { query } = router
   
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => handleId(), []);
 
   const handleId = () => {
