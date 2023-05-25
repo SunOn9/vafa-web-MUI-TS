@@ -1,7 +1,7 @@
 import { Inter } from 'next/font/google'
 import styles from '@/styles/Home.module.css'
 import Head from 'next/head'
-import { Typography } from '@mui/material'
+import { Box, Stack, Typography } from '@mui/material'
 import Header from '../components/Header';
 import React, { useEffect } from 'react'
 
@@ -28,34 +28,44 @@ export default function Home() {
       <Header
         isLoged={false}
         inHome={true}/>
-      <Typography 
-        variant='h1' 
-        align='center' 
-        m={5}
-      >
-        Welcome to VAFA
-      </Typography>
-      <Typography 
-        variant='h2' 
-        align='center' 
-        mt={5}
-      >
-        Test Account:
-      </Typography>
-      <Typography 
-        variant='h3' 
-        align='center' 
-        mt={5}
-      >
-        demo@demo
-      </Typography>
-      <Typography 
-        variant='h3' 
-        align='center' 
-        mt={5}
-      >
-        123456789
-      </Typography>
+      <Stack
+        direction='row'
+        minHeight='89vh'
+        display='flex'
+        alignItems='center'
+        justifyContent='space-around'
+        sx = {{
+          backgroundColor:'#193718'
+        }}
+        >
+        <Box
+          display=''
+          maxWidth='50vw'
+          sx={{
+            
+          }}>
+          <Typography
+            variant='h3'
+            sx={{
+              mb:4
+            }}>
+              Introducing <br/> VAFA
+          </Typography>
+          <Typography
+            variant='h5'
+            textAlign='justify'>
+              We’ve trained a model called VAFA which interacts in a conversational way. The dialogue format makes it possible for VAFA to answer followup questions, admit its mistakes, challenge incorrect premises, and reject inappropriate requests.
+          </Typography>
+        </Box>
+        <Box
+          maxWidth='50vw'
+          
+          sx={{
+
+          }}>
+          <img src="https://images.openai.com/blob/8d14e8f0-e267-4b8b-a9f2-a79120808f5a/chatgpt.jpg?trim=0,0,0,0&width=500" alt="" />
+        </Box>
+      </Stack>
     </>
   )
 }
