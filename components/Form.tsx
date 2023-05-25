@@ -6,24 +6,40 @@ import {useState} from 'react'
 export interface State extends SnackbarOrigin {
   open: boolean;
   message: string;
-  email?: boolean;
-  password?: boolean;
-  confirmPassword?: boolean;
+}
+export interface formState {
+  error: boolean ;
+  message: string;
 }
 
+export interface stateForm{
+  email: formState;
+  password: formState;
+  confirmPassword: formState;
+}
 export default function Form(props: {isSigned: boolean}) {
   const {push} = useRouter()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
-  const [confirmPassword, setConfirmPassword] = useState('')
   const [error, setError] = useState<State>({
     open: false,
-    email: false,
-    password: false,
-    confirmPassword: false,
     message: '',
     vertical: 'top',
     horizontal: 'center',
+  })
+  const [stateForm, setStateFrom] = useState<stateForm>({
+    email: {
+      error: true,
+      message: '',
+    },
+    password: {
+      error: true,
+      message: '',
+    },
+    confirmPassword: {
+      error: true,
+      message: '',
+    }
   })
   const [success, setSuccess] = useState(false)
   const [loading, setLoading] = useState(false)
@@ -37,58 +53,8 @@ export default function Form(props: {isSigned: boolean}) {
     setError({
         ...error,
         open: false,
-        email: false,
-        password: false,
-        confirmPassword: false,
         message: '',
       })
-  }
-  const validateLogin = () => {
-    if (!email) {
-      setError({...error, email: true, open: true, message: 'Email is required'})
-      return false
-    }
-    if(!regex.test(email)) {
-      setError({...error, email: true, open: true, message:'Email is not valid'})
-      return false
-    }
-    if (password.length < 8) {
-      setError({...error, password: true, open: true, message:'Password must be at least 8 characters'})
-      return false
-    }
-    if (!password) {
-      setError({...error, password: true, open: true, message:'Password is required'})
-      return false
-    }
-    return true
-  }
-
-  const validateSignIn = () => {
-    if (!email) {
-      setError({...error, email: true, open: true, message:'Email is required'})
-      return false
-    }
-    if(!regex.test(email)) {
-      setError({...error, email: true, open: true, message:'Email is not valid'})
-      return false
-    }
-    if (password.length < 8) {
-      setError({...error,  password: true, open: true, message:'Password must be at least 8 characters'})
-      return false
-    }
-    if (!password) {
-      setError({...error,  password: true, open: true, message:'Password is required'})
-      return false
-    }
-    if (!confirmPassword) {
-      setError({...error,  confirmPassword: true, open: true, message:'Confirm password is required'})
-      return false
-    }
-    if (password !== confirmPassword) {
-      setError({...error, password: true, confirmPassword: true, open: true, message:'Passwords do not match'})
-      return false
-    }
-    return true
   }
 
   const checkLogin = async () => {
@@ -107,11 +73,19 @@ export default function Form(props: {isSigned: boolean}) {
     const data = await response.json();
 
     if (data == null) {
-      setError({...error, email: true, open: true, message: 'User does not exist'})
+      setError({...error, open: true, message: 'User does not exist'})
+      setStateFrom({...stateForm, email : {
+        error: true,
+        message: ''
+      }})
       return -1
     }
     if (data.password !== password) {
-      setError({...error, password: true, open: true, message: 'Password does not match'})
+      setError({...error, open: true, message: 'Password does not match'})
+      setStateFrom({...stateForm, password : {
+        error: true,
+        message: ''
+      }})
       return -1
     }
     const id : string = data._id.toString()
@@ -138,7 +112,11 @@ export default function Form(props: {isSigned: boolean}) {
     else {
       try {
         const thisId = data._id
-        setError({...error, email: true, open: true, message: 'This email is registered'});
+        setError({...error, open: true, message: 'This email is registered'});
+        setStateFrom({...stateForm, email : {
+          error: true,
+          message: ''
+        }})
         return false
       }
       catch{
@@ -166,30 +144,70 @@ export default function Form(props: {isSigned: boolean}) {
 
   const handleLogin = async (event  : any) =>{
     event.preventDefault();
-
-    if (validateLogin()){
-      setLoading(true);
+    
+    setLoading(true);
+    if (!stateForm.email.error && !stateForm.password.error){
       const userId = await checkLogin()
       if (userId !== -1){
         localStorage.setItem('userId', userId);
         push('/chat');
       }
-      setLoading(false);
-    }
+    } 
+    else setError({...error, open: true, message: "Please check your input"})
+      
+    setLoading(false);
   }
   const handleSignin = async (event: any) => {
     event.preventDefault();
-
-    if (validateSignIn()){
-      setLoading(true);
+    setLoading(true);
+    if (!stateForm.email.error && !stateForm.password.error && !stateForm.confirmPassword.error) {
       if (await checkSignIn()){
         createUser()
         setSuccess(true)
       }
-      setLoading(false);
     }
+    else setError({...error, open: true, message: 'Please check your input'})
+
+    setLoading(false);
+    
     
   }
+  const handleEmailChange = async (event: any) => {
+    setEmail(event.target.value)
+    
+    if (!event.target.value) {
+      setStateFrom({...stateForm, email: {error : true,  message:'Email is required'}})
+    }
+    else if(!regex.test(event.target.value)) {
+      setStateFrom({...stateForm, email: {error : true, message:'Email is not valid'}})
+    } else {
+      setStateFrom({...stateForm ,email: {error : false, message:'Please fill all the required fields'}})
+    }
+  }
+
+  const handlePasswordChange = async (event: any) => {
+    setPassword(event.target.value)
+    if (!event.target.value) {
+      setStateFrom({...stateForm, password: {error : true, message:'Password is required'}})
+    }
+    else if (event.target.value.length < 8) {
+      setStateFrom({...stateForm, password: {error : true,  message:'Password must be at least 8'}})
+    } else {
+      setStateFrom({...stateForm , password: {error : false, message:'Please fill all the required fields'}})
+    }
+  }
+
+  const handleConfirmPasswordChange = async (event: any) => {
+    if (!event.target.value) {
+      setStateFrom({...stateForm, confirmPassword: {error : true, message:'Confirm password is required'}})
+    }
+    else if (password !== event.target.value) {
+      setStateFrom({...stateForm, confirmPassword: {error : true, message:'Passwords do not match'}})
+    } else {
+      setStateFrom({...stateForm, confirmPassword: {error : false, message:'Please fill all the required fields'}})
+    }
+  }
+  
   
   return (
     <>
@@ -214,12 +232,12 @@ export default function Form(props: {isSigned: boolean}) {
           placeholder="Enter email address..."
           label="Email"
           variant="outlined"
-          required
           disabled={loading}
-          onChange={(e)=>setEmail(e.target.value)}
-          error={error.email}
+          onChange={handleEmailChange}
+          error={stateForm.email.error}
+          helperText={stateForm.email.error ? (stateForm.email.message) : ''}
           sx={{
-            m: 1
+            m: 2
           }}/>
         <TextField 
           id="password"
@@ -227,12 +245,12 @@ export default function Form(props: {isSigned: boolean}) {
           placeholder="Enter password..."
           label="Password"
           variant="outlined"
-          required
           disabled={loading}
-          onChange={(e)=>setPassword(e.target.value)}
-          error={error.password}
+          onChange={handlePasswordChange}
+          error={stateForm.password.error}
+          helperText={stateForm.password.error ? (stateForm.password.message) : ''}
           sx={{
-            m: 1
+            m: 2
           }}/>
         {!props.isSigned &&
           <TextField 
@@ -241,12 +259,12 @@ export default function Form(props: {isSigned: boolean}) {
             placeholder="Confirm password..."
             label="Confirm password"
             variant="outlined"
-            required
             disabled={loading}
-            onChange={(e)=>setConfirmPassword(e.target.value)}
-            error={error.confirmPassword}
+            onChange={handleConfirmPasswordChange}
+            error={stateForm.confirmPassword.error}
+          helperText={stateForm.confirmPassword.error ? stateForm.confirmPassword.message : ''}
             sx={{
-              m: 1
+              m: 2
             }}/>
         }
         <Box
