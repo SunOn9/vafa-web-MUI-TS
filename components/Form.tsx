@@ -171,10 +171,8 @@ export default function Form(props: {isSigned: boolean}) {
       setLoading(true);
       const userId = await checkLogin()
       if (userId !== -1){
-        push({
-            pathname: '/chat',
-            query: { id: userId }
-          }, '/chat')
+        localStorage.setItem('userId', userId);
+        push('/chat');
       }
       setLoading(false);
     }

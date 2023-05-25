@@ -3,10 +3,20 @@ import styles from '@/styles/Home.module.css'
 import Head from 'next/head'
 import { Typography } from '@mui/material'
 import Header from '../components/Header';
+import React, { useEffect } from 'react'
 
 const inter = Inter({ subsets: ['latin'] })
 
 export default function Home() {
+  useEffect(() =>{
+    handleAlreadyLogin();
+  },[])
+
+  const handleAlreadyLogin = () => {
+    if (localStorage.getItem('userId')) {
+      window.location.href = '/chat';
+    }
+  }
   return (
     <>
       <Head>

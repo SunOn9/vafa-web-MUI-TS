@@ -9,40 +9,17 @@ export default function Header(props : {
         inLogin? : boolean,
         inSignIn? : boolean,
         inChat? : boolean,
-        inHome? : boolean,
-        userId? : string | string[] | undefined,
+        inHome? : boolean
     })
 {
     const router = useRouter()
 
-    const currentId = props.userId
 
     //handle logout button event 
-    const handleLogout = (event: React.MouseEvent<HTMLElement>): void => {
+    const handleLogout = async (event: React.MouseEvent<HTMLElement>): Promise<void> => {
         event.preventDefault()
-
-        router.push({
-            pathname: '/',
-            query: { id: '' }
-        }, '/')
-    }
-    //handle chat button event 
-    const handleChat = (event: React.MouseEvent<HTMLElement>): void => {
-        event.preventDefault()
-
-        router.push({
-            pathname: '/chat',
-            query: { id: currentId }
-        }, '/chat')
-    }
-    //handle history button event 
-    const handleHistory = (event: React.MouseEvent<HTMLElement>): void => {
-        event.preventDefault()
-        console.log(currentId)
-        router.push({
-            pathname: '/history',
-            query: { id: currentId }
-        }, '/history')
+        localStorage.clear();
+        router.push('/')
     }
     
     return (
@@ -138,7 +115,7 @@ export default function Header(props : {
                                     variant="h6"
                                     noWrap
                                     component={Link}
-                                    href=""
+                                    href="/chat"
                                     sx={{
                                         fontFamily: 'monospace',
                                         fontWeight: 700,
@@ -149,7 +126,6 @@ export default function Header(props : {
                                             color: 'primary.main',
                                         }
                                     }}
-                                    onClick={handleChat}
                                 >
                                     CHAT
                                 </Typography>
@@ -160,7 +136,7 @@ export default function Header(props : {
                                     variant="h6"
                                     noWrap
                                     component={Link}
-                                    href=""
+                                    href="/history"
                                     sx={{
                                         fontFamily: 'monospace',
                                         fontWeight: 700,
@@ -171,7 +147,6 @@ export default function Header(props : {
                                             color: 'primary.main',
                                         }
                                     }}
-                                    onClick={handleHistory}
                                 >
                                     HISTORY
                                 </Typography>

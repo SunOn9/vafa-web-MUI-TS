@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react'
 import Link from 'next/link';
 import Header from '@/components/Header'
 import {Typography, Box, Stack, Paper, Backdrop, CircularProgress} from '@mui/material'
-import { useRouter } from 'next/router'
 
 interface chat {
   userId : string,
@@ -15,28 +14,27 @@ export default function History(): React.JSX.Element {
   const [datas, setDatas] = useState<any>()
   const [isExist, setIsExist] = useState(false)
   const [loading, setLoading] = useState(false)
-  const router = useRouter()
-  const { query } = router
+  
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => handleHistory(), []);
 
-  const handleHistory = () =>{
-    setLoading(true)
-    if (datas === undefined){
-      if (query.id === undefined){
-        setIsExist(false)
-      }
-      else {
-        setIsExist(true)
-        getHistory()
-      }
+  const handleHistory = () => {
+    const usersID = localStorage.getItem('userId');
+    if (usersID === null) {
+      setIsExist(false)
     }
-  }
-  const getHistory = async () => {
+    else {
+          setIsExist(true)
+          setLoading(true)
+          getHistory(usersID)
+        }
+  };
+  
+  const getHistory = async (usersId : string) => {
     
     const dataQuery = {
-      userId: query.id 
+      userId: usersId
     }
     
     const response = await fetch('/api/findHistoryById', {
@@ -56,7 +54,7 @@ export default function History(): React.JSX.Element {
         <Header
           isLoged={true}
           inHistory={true}
-          userId={query.id}/>
+        />
         <Box
           display='flex'
           justifyContent='center'

@@ -1,6 +1,5 @@
 import React, { useEffect } from 'react'
 import { useState } from 'react';
-import { useRouter } from 'next/router';
 import Header from '@/components/Header'
 import {Box, Typography, Stack, TextField, Paper, FormControl, Backdrop, CircularProgress} from '@mui/material'
 import Link from 'next/link';
@@ -28,26 +27,19 @@ export default function Chat(): React.JSX.Element {
   })
   const [loading, setLoading] = useState(false)
 
-  const router = useRouter()
-  const { query } = router
-  
   // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => handleId(), []);
 
   const handleId = () => {
-    if (query.id === undefined){
-      setCurrentId({
-        id: '',
-        isExist: false
-      })
+    const usersID = localStorage.getItem('userId');
+    if (usersID === null) {
+      setCurrentId({id: '', isExist: false})
     }
     else {
-      setCurrentId({
-        id: query.id,
-        isExist: true
-      })
+      setCurrentId({id: usersID, isExist: true})  
     }
   }
+  
   //get the answer from AI
   const getAnswer = async () =>{
     const endpoint = 'https://api.pawan.krd/v1/chat/completions';
@@ -120,7 +112,7 @@ export default function Chat(): React.JSX.Element {
       <Header
         isLoged={true}
         inChat={true}
-        userId={currentId.id}/>
+    />
       <Box
         display='flex'
         justifyContent='center'
