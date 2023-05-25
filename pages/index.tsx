@@ -45,15 +45,18 @@ export default function Home() {
             
           }}>
           <Typography
-            variant='h3'
+            variant='h2'
+            color='#FF8BFF'
             sx={{
-              mb:4
+              mb:4,
+              fontWeight: 'bold'
             }}>
               Introducing <br/> VAFA
           </Typography>
           <Typography
             variant='h5'
-            textAlign='justify'>
+            textAlign='justify'
+            color='#FF8BFF'>
               We’ve trained a model called VAFA which interacts in a conversational way. The dialogue format makes it possible for VAFA to answer followup questions, admit its mistakes, challenge incorrect premises, and reject inappropriate requests.
           </Typography>
         </Box>
