@@ -21,9 +21,30 @@ export default function Home() {
       <Typography 
         variant='h1' 
         align='center' 
-        p={5}
+        m={5}
       >
         Welcome to VAFA
+      </Typography>
+      <Typography 
+        variant='h2' 
+        align='center' 
+        mt={5}
+      >
+        Test Account:
+      </Typography>
+      <Typography 
+        variant='h3' 
+        align='center' 
+        mt={5}
+      >
+        demo@demo
+      </Typography>
+      <Typography 
+        variant='h3' 
+        align='center' 
+        mt={5}
+      >
+        123456789
       </Typography>
     </>
   )
