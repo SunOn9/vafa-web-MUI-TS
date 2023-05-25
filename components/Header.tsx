@@ -9,6 +9,7 @@ export default function Header(props : {
         inLogin? : boolean,
         inSignIn? : boolean,
         inChat? : boolean,
+        inImage? : boolean,
         inHome? : boolean
     })
 {
@@ -128,6 +129,27 @@ export default function Header(props : {
                                     }}
                                 >
                                     CHAT
+                                </Typography>
+                            )}
+                            {!props.inImage && (
+                                <Typography
+                                    ml={5}
+                                    variant="h6"
+                                    noWrap
+                                    component={Link}
+                                    href="/image"
+                                    sx={{
+                                        fontFamily: 'monospace',
+                                        fontWeight: 700,
+                                        letterSpacing: '.3rem',
+                                        color: 'inherit',
+                                        textDecoration: 'none',
+                                        "&:hover": {
+                                            color: 'primary.main',
+                                        }
+                                    }}
+                                >
+                                    IMAGE
                                 </Typography>
                             )}
                             {!props.inHistory && (
