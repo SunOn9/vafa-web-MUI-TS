@@ -23,7 +23,7 @@ export default function Home() {
         align='center' 
         p={5}
       >
-        HELLO WORLD
+        Welcome to VAFA
       </Typography>
     </>
   )

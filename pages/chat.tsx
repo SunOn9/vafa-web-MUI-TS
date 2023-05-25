@@ -150,7 +150,7 @@ export default function Chat(): React.JSX.Element {
                           boxShadow: 2,
                           borderRadius: 2,
                           minWidth: '5vw',
-                          maxWidth: '30vw',
+                          maxWidth: '50vw',
                           textAlign: 'justify',
                           fontSize: 18,
                           display: 'flex',
@@ -176,8 +176,8 @@ export default function Chat(): React.JSX.Element {
                           boxShadow: 2,
                           borderRadius: 2,
                           minWidth: '10vw',
-                          maxWidth: '50vw',
-                          textAlign: 'justify',
+                          maxWidth: '70vw',
+                          textAlign: 'left',
                           fontSize: 18,
                           display: 'flex',
                           justifyContent: 'center',
@@ -211,7 +211,7 @@ export default function Chat(): React.JSX.Element {
             flexDirection: 'row',
             justifyContent:'space-evenly',
             width: '100%',
-            mb: 1,
+            mb: 0,
             position: 'absolute',
             bottom: 0
           }}>
