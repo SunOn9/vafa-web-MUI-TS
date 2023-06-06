@@ -4,7 +4,6 @@ import Header from '@/components/Header'
 import {Typography, Box, Stack, Paper, Backdrop, CircularProgress} from '@mui/material'
 import { useLazyQuery, useQuery } from '@apollo/client';
 import { GET_CHAT_BY_USER_ID } from './apollo-client/querries';
-import { Cookie } from 'next/font/google';
 import Cookies from 'js-cookie';
 
 interface chat {
@@ -19,7 +18,9 @@ export default function History(): React.JSX.Element {
   const [isExist, setIsExist] = useState(false)
   const id = Cookies.get('userId')
   const [loading, setLoading] = useState(false)
-  const [getChat] = useLazyQuery(GET_CHAT_BY_USER_ID)
+  const [getChat] = useLazyQuery(GET_CHAT_BY_USER_ID, {
+    fetchPolicy: "no-cache" 
+  })
 
   const handleHistory = async () => {
     setLoading(true)

@@ -19,15 +19,6 @@ export default function Login() {
     message: ''
   })
 
-  useEffect(() =>{
-    handleAlreadyLogin();
-  },[])
-
-  const handleAlreadyLogin = () => {
-    if (Cookies.get('userId')) {
-      window.location.href = '/chat';
-    }
-  }
 
   const regex = new RegExp("^[a-zA-Z0-9]+(?:\.[a-zA-Z0-9]+)*@[a-zA-Z0-9]+(?:\.[a-zA-Z0-9]+)*$")
 

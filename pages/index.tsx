@@ -4,21 +4,12 @@ import Head from 'next/head'
 import { Box, Stack, Typography } from '@mui/material'
 import Header from '../components/Header';
 import React, { useEffect } from 'react'
-import Cookies from 'js-cookie';
+
 
 const inter = Inter({ subsets: ['latin'] })
 
 export default function Home() {
 
-  useEffect(() =>{
-    handleAlreadyLogin();
-  },[])
-
-  const handleAlreadyLogin = () => {
-    if (Cookies.get('userId')) {
-      window.location.href = '/chat';
-    }
-  }
   return (
     <>
       <Head>

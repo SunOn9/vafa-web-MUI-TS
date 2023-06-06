@@ -33,7 +33,7 @@ export default function Chat(): React.JSX.Element {
 
   const handleId = () => {
     const usersID = Cookies.get('userId');
-    if (usersID === null) {
+    if (!usersID) {
       setCurrentId({id: '', isExist: false})
     }
     else {

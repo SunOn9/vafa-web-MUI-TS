@@ -8,7 +8,6 @@ import { useLazyQuery, useMutation } from '@apollo/client';
 import { GET_USER_BY_EMAIL } from './apollo-client/querries';
 import { CREATE_USER } from './apollo-client/mutations';
 import * as Yup from 'yup';
-import Cookies from 'js-cookie';
 
 interface errorSignIn{
   error: boolean;
@@ -30,18 +29,6 @@ export default function SignIn(): React.JSX.Element {
     success: false,
     username: ''
   })
-
-  useEffect(() =>{
-    handleAlreadyLogin();
-  },[])
-
-  const handleAlreadyLogin = () => {
-    if (Cookies.get('userId')) {
-      window.location.href = '/chat';
-    }
-  }
-
-  
 
   const [getUser] = useLazyQuery(GET_USER_BY_EMAIL)
 
