@@ -3,11 +3,12 @@ import { useState } from 'react';
 import Header from '@/components/Header'
 import {Box, Typography, Stack, TextField, Paper, FormControl, Backdrop, CircularProgress} from '@mui/material'
 import Link from 'next/link';
-
+import { useMutation } from '@apollo/client';
+import { CREATE_CHAT } from './apollo-client/mutations';
+import Cookies from 'js-cookie';
 
 interface chat {
   userId : string,
-  createdAt: string  ,
   question: string,
   answer: string  
 }
@@ -25,13 +26,12 @@ export default function Chat(): React.JSX.Element {
     isExist: false
   })
   const [loading, setLoading] = useState(false)
-
+  const usersID = Cookies.get('userId');
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  useEffect(() => handleId(), []);
+  useEffect(() => handleId(), [usersID]);
 
   const handleId = () => {
-    const usersID = localStorage.getItem('userId');
-    if (usersID === null) {
+    if (!usersID) {
       setCurrentId({id: '', isExist: false})
     }
     else {
@@ -64,23 +64,8 @@ export default function Chat(): React.JSX.Element {
     const response = await fetch(endpoint, options)
     return response
   }
-  const saveData = async (props : chat) => {
-    const query = {
-      userId: props.userId,
-      createdAt: props.createdAt,
-      question: props.question,
-      answer: props.answer
-    }
-    const response = await fetch("/api/createChat", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify(query)
-    });
-    
-    const data = await response.json();
-  }
+
+  const [postChat] = useMutation(CREATE_CHAT)
 
   const handleSubmit = async (event : any) => {
     event.preventDefault()
@@ -92,14 +77,20 @@ export default function Chat(): React.JSX.Element {
 
       const chatCompletion : chat = {
         userId: currentId.id,
-        createdAt: result.created,
         question: question,
         answer: result.choices[0].message.content
       }
       setDatas([...datas, chatCompletion])
       setQuestion(" ")
       setLoading(false);
-      const db = await saveData(chatCompletion)
+
+      const {data} = await postChat({variables: {
+        input: {
+          userIdField: chatCompletion.userId,
+          questionField: chatCompletion.question,
+          answerField: chatCompletion.answer
+        }
+      }})
     }
     else{
       throw new Error(response.statusText)
@@ -121,7 +112,7 @@ export default function Chat(): React.JSX.Element {
           component={Paper}
           sx={{
             width: '80vw',
-            height: '81vh',
+            height: '83vh',
             overflow: 'auto'
           }}
         >
@@ -219,7 +210,8 @@ export default function Chat(): React.JSX.Element {
             onChange={(e) => setQuestion(e.target.value)}
             id="question"
             variant="filled"
-            autoComplete='off'/>
+            autoComplete='off'
+            required/>
         </FormControl>
         {loading && (
           <CircularProgress

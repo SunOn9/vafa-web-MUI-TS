@@ -4,16 +4,18 @@ import Head from 'next/head'
 import { Box, Stack, Typography } from '@mui/material'
 import Header from '../components/Header';
 import React, { useEffect } from 'react'
+import Cookies from 'js-cookie';
 
 const inter = Inter({ subsets: ['latin'] })
 
 export default function Home() {
+
   useEffect(() =>{
     handleAlreadyLogin();
   },[])
 
   const handleAlreadyLogin = () => {
-    if (localStorage.getItem('userId')) {
+    if (Cookies.get('userId')) {
       window.location.href = '/chat';
     }
   }
@@ -30,12 +32,12 @@ export default function Home() {
         inHome={true}/>
       <Stack
         direction='row'
-        minHeight='89vh'
+        minHeight='90vh'
         display='flex'
         alignItems='center'
         justifyContent='space-around'
         sx = {{
-          backgroundColor:'#193718'
+          
         }}
         >
         <Box
@@ -46,7 +48,7 @@ export default function Home() {
           }}>
           <Typography
             variant='h2'
-            color='#FF8BFF'
+            color='#e2eff6'
             sx={{
               mb:4,
               fontWeight: 'bold'
@@ -56,7 +58,7 @@ export default function Home() {
           <Typography
             variant='h5'
             textAlign='justify'
-            color='#FF8BFF'>
+            color='#e2eff6'>
               We’ve trained a model called VAFA which interacts in a conversational way. The dialogue format makes it possible for VAFA to answer followup questions, admit its mistakes, challenge incorrect premises, and reject inappropriate requests.
           </Typography>
         </Box>
@@ -66,7 +68,89 @@ export default function Home() {
           sx={{
 
           }}>
-          <img src="https://images.openai.com/blob/8d14e8f0-e267-4b8b-a9f2-a79120808f5a/chatgpt.jpg?trim=0,0,0,0&width=500" alt="" />
+          <img src="https://images.openai.com/blob/2e288b87-2d80-4fa6-abea-5d9e650d7143/forecasting-misuse.png?trim=0,0,0,0&width=500" alt="" />
+        </Box>
+      </Stack>
+      <Stack
+        direction='row'
+        minHeight='90vh'
+        display='flex'
+        alignItems='center'
+        justifyContent='space-around'
+        sx = {{
+          
+        }}
+        >
+        <Box
+          display=''
+          maxWidth='50vw'
+          sx={{
+            
+          }}>
+          <Typography
+            variant='h2'
+            color='#e2eff6'
+            sx={{
+              mb:4,
+              fontWeight: 'bold'
+            }}>
+              Introducing <br/> VAFA
+          </Typography>
+          <Typography
+            variant='h5'
+            textAlign='justify'
+            color='#e2eff6'>
+              We’ve trained a model called VAFA which interacts in a conversational way. The dialogue format makes it possible for VAFA to answer followup questions, admit its mistakes, challenge incorrect premises, and reject inappropriate requests.
+          </Typography>
+        </Box>
+        <Box
+          maxWidth='50vw'
+          
+          sx={{
+
+          }}>
+          <img src="https://images.openai.com/blob/2e288b87-2d80-4fa6-abea-5d9e650d7143/forecasting-misuse.png?trim=0,0,0,0&width=500" alt="" />
+        </Box>
+      </Stack>
+      <Stack
+        direction='row'
+        minHeight='90vh'
+        display='flex'
+        alignItems='center'
+        justifyContent='space-around'
+        sx = {{
+          
+        }}
+        >
+        <Box
+          display=''
+          maxWidth='50vw'
+          sx={{
+            
+          }}>
+          <Typography
+            variant='h2'
+            color='#e2eff6'
+            sx={{
+              mb:4,
+              fontWeight: 'bold'
+            }}>
+              Introducing <br/> VAFA
+          </Typography>
+          <Typography
+            variant='h5'
+            textAlign='justify'
+            color='#e2eff6'>
+              We’ve trained a model called VAFA which interacts in a conversational way. The dialogue format makes it possible for VAFA to answer followup questions, admit its mistakes, challenge incorrect premises, and reject inappropriate requests.
+          </Typography>
+        </Box>
+        <Box
+          maxWidth='50vw'
+          
+          sx={{
+
+          }}>
+          <img src="https://images.openai.com/blob/2e288b87-2d80-4fa6-abea-5d9e650d7143/forecasting-misuse.png?trim=0,0,0,0&width=500" alt="" />
         </Box>
       </Stack>
     </>

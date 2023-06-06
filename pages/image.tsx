@@ -3,6 +3,7 @@ import { useState } from 'react';
 import Header from '@/components/Header'
 import {Box, Typography, Stack, TextField, Paper, FormControl, Backdrop, CircularProgress} from '@mui/material'
 import Link from 'next/link';
+import Cookies from 'js-cookie';
 
 
 
@@ -31,7 +32,7 @@ export default function Chat(): React.JSX.Element {
   useEffect(() => handleId(), []);
 
   const handleId = () => {
-    const usersID = localStorage.getItem('userId');
+    const usersID = Cookies.get('userId');
     if (usersID === null) {
       setCurrentId({id: '', isExist: false})
     }
@@ -99,7 +100,7 @@ export default function Chat(): React.JSX.Element {
           component={Paper}
           sx={{
             width: '80vw',
-            height: '81vh',
+            height: '83vh',
             overflow: 'auto'
           }}
         >

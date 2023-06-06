@@ -2,9 +2,13 @@ import React, { useEffect, useState } from 'react'
 import Link from 'next/link';
 import Header from '@/components/Header'
 import {Typography, Box, Stack, Paper, Backdrop, CircularProgress} from '@mui/material'
+import { useLazyQuery, useQuery } from '@apollo/client';
+import { GET_CHAT_BY_USER_ID } from './apollo-client/querries';
+import { Cookie } from 'next/font/google';
+import Cookies from 'js-cookie';
 
 interface chat {
-  userId : string,
+  _id : string,
   createdAt: string,
   question: string,
   answer: string  
@@ -13,42 +17,27 @@ interface chat {
 export default function History(): React.JSX.Element {
   const [datas, setDatas] = useState<any>()
   const [isExist, setIsExist] = useState(false)
+  const id = Cookies.get('userId')
   const [loading, setLoading] = useState(false)
-  
+  const [getChat] = useLazyQuery(GET_CHAT_BY_USER_ID)
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  useEffect(() => handleHistory(), []);
-
-  const handleHistory = () => {
-    const usersID = localStorage.getItem('userId');
-    if (usersID === null) {
+  const handleHistory = async () => {
+    setLoading(true)
+    if (!id){
       setIsExist(false)
     }
-    else {
-          setIsExist(true)
-          setLoading(true)
-          getHistory(usersID)
-        }
-  };
-  
-  const getHistory = async (usersId : string) => {
-    
-    const dataQuery = {
-      userId: usersId
+    else{
+      setIsExist(true)
+      const {data} = await getChat({variables: {authorId: id}})
+      setDatas(data.chat)
     }
-    
-    const response = await fetch('/api/findHistoryById', {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify(dataQuery)
-    })
-    
-    const data = await response.json();
-    setDatas(data)
     setLoading(false)
   }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  useEffect(() => {
+    handleHistory()
+  }, []);
+
   return (
     <>
         <Header
@@ -61,17 +50,12 @@ export default function History(): React.JSX.Element {
           alignContent='center'>
         {loading && (
           <CircularProgress
-            size={200}
+            size={50}
             sx={{
               position: 'absolute',
-              top: '50%',
-              left: '50%',
-              marginTop: -12,
-              marginLeft: -12,
             }}
           />
         )}
-        
         <Stack
           direction="column"
           component={Paper}
@@ -92,7 +76,7 @@ export default function History(): React.JSX.Element {
                   }}
                   >
                   <Typography
-                    key={'req'+data.userId}
+                    key={'req'+data._id}
                     sx={{
                       p: 1,
                       mr: 2,
@@ -118,7 +102,7 @@ export default function History(): React.JSX.Element {
                   }}
                   >
                   <Typography 
-                    key={'res'+data.userId}
+                    key={'res'+data._id}
                     
                     sx={{
                       p: 1,

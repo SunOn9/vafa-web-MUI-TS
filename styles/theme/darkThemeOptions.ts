@@ -4,19 +4,19 @@ const darkThemeOptions: ThemeOptions = {
   palette: {
     mode: 'dark',
     primary: {
-      main: '#D65A31',
+      main: '#a0532d',
     },
     background: {
         default: '#222831',
         paper: '#393E46'
     },
     text: {
-      primary: '#EEEEEE',
+      primary: '#e2eff6',
       secondary: 'rgba(255, 255, 255, 0.7)',
       disabled: 'rgba(255, 255, 255, 0.5)'
     },
     action: {
-      active: '#EEEEEE',
+      active: '#e2eff6',
       hover: 'rgba(255, 255, 255, 0.08)',
       selected: 'rgba(255, 255, 255, 0.16)',
       disabled: 'rgba(255, 255, 255, 0.3)',

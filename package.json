@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@apollo/client": "^3.7.14",
     "@emotion/cache": "^11.11.0",
     "@emotion/react": "^11.11.0",
     "@emotion/server": "^11.11.0",
@@ -16,15 +17,29 @@
     "@fontsource/roboto": "^5.0.0",
     "@mui/icons-material": "^5.11.16",
     "@mui/material": "^5.13.1",
+    "@types/js-cookie": "^3.0.3",
     "@types/node": "20.2.3",
     "@types/react": "18.2.6",
     "@types/react-dom": "18.2.4",
+    "apollo-server-micro": "^3.0.0",
     "eslint": "8.41.0",
     "eslint-config-next": "13.4.3",
+    "formik": "^2.4.1",
+    "graphql": "^16.6.0",
+    "graphql-request": "^6.1.0",
+    "js-cookie": "^3.0.5",
     "mongodb": "^5.5.0",
     "next": "13.4.3",
+    "prettier": "^2.8.8",
     "react": "18.2.0",
     "react-dom": "18.2.0",
-    "typescript": "5.0.4"
+    "react-hook-form": "^7.44.2",
+    "typescript": "5.0.4",
+    "yup": "^1.2.0"
+  },
+  "devDependencies": {
+    "@graphql-codegen/cli": "^4.0.0",
+    "@graphql-codegen/typescript": "^4.0.0",
+    "@graphql-codegen/typescript-resolvers": "^4.0.0"
   }
 }
