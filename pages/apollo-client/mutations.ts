@@ -3,9 +3,11 @@ import { gql } from '@apollo/client';
 export const CREATE_USER = gql`
   mutation Mutation($input: CreateUserInput!) {
     createUser(input: $input) {
-      email
+      message
+      success
     }
-  }
+}
+
 `;
 
 export const CREATE_CHAT = gql`

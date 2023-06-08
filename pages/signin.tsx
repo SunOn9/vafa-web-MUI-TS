@@ -4,62 +4,49 @@ import Header from '../components/Header';
 
 import { Alert, Box, Button, CircularProgress, Snackbar, Stack, TextField } from '@mui/material';
 import { Field, Formik } from 'formik';
-import { useLazyQuery, useMutation } from '@apollo/client';
-import { GET_USER_BY_EMAIL } from './apollo-client/querries';
+import { useMutation } from '@apollo/client';
 import { CREATE_USER } from './apollo-client/mutations';
 import * as Yup from 'yup';
 
-interface errorSignIn{
-  error: boolean;
-  message: string;
-}
 
-interface successSignIn{
-  success: boolean;
-  username: any;
+interface stateSignIn{
+  error?: boolean;
+  success?: boolean;
+  message: any;
 }
 
 export default function SignIn(): React.JSX.Element {
-  const [errorSignIn, setSignInError] = useState<errorSignIn>({
+  const [stateSignIn, setStateSignIn] = useState<stateSignIn>({
     error: false,
+    success: false,
     message: ''
   })
+  
   const [loading, setLoading] = useState(false)
-  const [success, setSuccess] = useState<successSignIn>({
-    success: false,
-    username: ''
-  })
-
-  const [getUser] = useLazyQuery(GET_USER_BY_EMAIL)
 
   const [postUser] = useMutation(CREATE_USER)
-
 
   const handleSignIn = async (props : any) => {
     setLoading(true)
 
-    const {data} = await getUser({variables: {email: props.email}})
-
-    if (data && data.user) {
-      setSignInError({
+    const {data} = await postUser({ variables: {
+      input: {
+        emailField: props.email,
+        passwordField: props.password
+      }
+    }})
+    if (data.createUser.success) {
+      setStateSignIn({
+        success: true,
+        message: data.createUser.message
+      })
+    } else {
+      setStateSignIn({
         error: true,
-        message: 'This email has already been registered!'
+        message: data.createUser.message
       })
     }
-    else {
-      const {data} = await postUser({ variables: {
-        input: {
-          emailField: props.email,
-          passwordField: props.password
-        }
-      }})
-      if (data && data.createUser){
-        setSuccess({
-          success: true,
-          username: data.createUser.email
-        })
-      }
-    }
+      
     setLoading(false)
   }
 
@@ -78,15 +65,10 @@ export default function SignIn(): React.JSX.Element {
   });
 
   const onClose = () => {
-    setSignInError({
+    setStateSignIn({
       error: false,
-      message: ''
-    })
-  }
-  const onCloseSuccess= () => {
-    setSuccess({
       success: false,
-      username: ''
+      message: ''
     })
   }
 
@@ -209,14 +191,14 @@ export default function SignIn(): React.JSX.Element {
             />
           )}
       </Box>
-      <Snackbar open={errorSignIn.error} onClose={onClose} autoHideDuration={2000}>
+      <Snackbar open={stateSignIn.error} onClose={onClose} autoHideDuration={2000}>
           <Alert severity="warning" sx={{ width: '100%' }}>
-            {errorSignIn.message}
+            {stateSignIn.message}
           </Alert>
         </Snackbar>
-        <Snackbar open={success.success} onClose={onCloseSuccess} autoHideDuration={2000}>
+        <Snackbar open={stateSignIn.success} onClose={onClose} autoHideDuration={2000}>
           <Alert severity="success" sx={{ width: '100%' }}>
-            Account {success.username} successfully created!
+            {stateSignIn.message}
           </Alert>
         </Snackbar>
     </>

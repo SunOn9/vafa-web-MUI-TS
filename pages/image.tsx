@@ -6,38 +6,21 @@ import Link from 'next/link';
 import Cookies from 'js-cookie';
 
 interface chat {
-  userId : string,
-  createdAt: string  ,
   question: string,
   answer: string  
-}
-
-interface currentId {
-  id: any;
-  isExist : boolean;
 }
 
 export default function Chat(): React.JSX.Element {
   const [question , setQuestion] = useState('')
   const [datas, setDatas] = useState<any>([])
-  const [currentId, setCurrentId] = useState<currentId>({
-    id: '',
-    isExist: false
-  })
+  const [isLogin, setIsLogin] = useState(false)
   const [loading, setLoading] = useState(false)
+  const token = Cookies.get('token');
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  useEffect(() => handleId(), []);
-
-  const handleId = () => {
-    const usersID = Cookies.get('userId');
-    if (!usersID) {
-      setCurrentId({id: '', isExist: false})
-    }
-    else {
-      setCurrentId({id: usersID, isExist: true})  
-    }
-  }
+  useEffect(() => {if (token){
+    setIsLogin(true);
+  }}, []);
   
   //get the answer from AI
   const getAnswer = async () =>{
@@ -69,8 +52,6 @@ export default function Chat(): React.JSX.Element {
       const result = await response.json()
 
       const chatCompletion : chat = {
-        userId: currentId.id,
-        createdAt: result.created,
         question: question,
         answer: result.data[0].url
       }
@@ -113,7 +94,7 @@ export default function Chat(): React.JSX.Element {
                   }}
                   >
                   <Typography
-                    key={'req'+data.userId}
+                    key={'req'+ data.question}
 
                     sx={{
                       p: 1,
@@ -193,7 +174,7 @@ export default function Chat(): React.JSX.Element {
       </Box>
       <Backdrop
         sx={{ color: '#fff'}}
-        open={!currentId.isExist}
+        open={!isLogin}
       >
         <Stack
           sx={{
