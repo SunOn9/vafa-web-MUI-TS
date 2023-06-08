@@ -31,7 +31,7 @@ export default function Login() {
 
     if(data && data.login && data.login.access_token){
       Cookies.set('token', data.login.access_token)
-      //window.location.href = '/chat';
+      window.location.href = '/chat';
     }
     else{
       setErrorLogin({
