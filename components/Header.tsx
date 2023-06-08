@@ -1,7 +1,6 @@
 import { AppBar, Box, Toolbar, Typography } from '@mui/material'
-import React, { useState } from 'react'
+import React from 'react'
 import Link from 'next/link'
-import { useRouter } from 'next/router';
 import Cookies from 'js-cookie';
 
 export default function Header(props : {
@@ -14,13 +13,12 @@ export default function Header(props : {
         inHome? : boolean
     })
 {
-    const router = useRouter()
     
     //handle logout button event 
     const handleLogout = async (event: React.MouseEvent<HTMLElement>): Promise<void> => {
         event.preventDefault()
-        Cookies.remove('userId');
-        router.push('/')
+        Cookies.remove('token');
+        window.location.href = '/';
     }
     
     return (

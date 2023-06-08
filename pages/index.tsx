@@ -3,7 +3,7 @@ import styles from '@/styles/Home.module.css'
 import Head from 'next/head'
 import { Box, Stack, Typography } from '@mui/material'
 import Header from '../components/Header';
-import React, { useEffect } from 'react'
+import React from 'react'
 
 
 const inter = Inter({ subsets: ['latin'] })

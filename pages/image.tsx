@@ -5,8 +5,6 @@ import {Box, Typography, Stack, TextField, Paper, FormControl, Backdrop, Circula
 import Link from 'next/link';
 import Cookies from 'js-cookie';
 
-
-
 interface chat {
   userId : string,
   createdAt: string  ,

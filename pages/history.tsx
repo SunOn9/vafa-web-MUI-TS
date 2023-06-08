@@ -5,6 +5,7 @@ import {Typography, Box, Stack, Paper, Backdrop, CircularProgress} from '@mui/ma
 import { useLazyQuery, useQuery } from '@apollo/client';
 import { GET_CHAT_BY_USER_ID } from './apollo-client/querries';
 import Cookies from 'js-cookie';
+import { Token } from 'graphql';
 
 interface chat {
   _id : string,
@@ -16,20 +17,25 @@ interface chat {
 export default function History(): React.JSX.Element {
   const [datas, setDatas] = useState<any>()
   const [isExist, setIsExist] = useState(false)
-  const id = Cookies.get('userId')
+  const token = Cookies.get('token')
   const [loading, setLoading] = useState(false)
   const [getChat] = useLazyQuery(GET_CHAT_BY_USER_ID, {
+    context: {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    },
     fetchPolicy: "no-cache" 
   })
 
   const handleHistory = async () => {
     setLoading(true)
-    if (!id){
+    if (!token){
       setIsExist(false)
     }
     else{
       setIsExist(true)
-      const {data} = await getChat({variables: {authorId: id}})
+      const {data} = await getChat()
       setDatas(data.chat)
     }
     setLoading(false)

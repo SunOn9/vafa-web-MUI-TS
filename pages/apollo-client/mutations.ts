@@ -15,3 +15,12 @@ export const CREATE_CHAT = gql`
     }
   }
 `;
+
+export const LOGIN = gql`
+  mutation Mutation($loginUserInput: LoginUserInput!) {
+  login(loginUserInput: $loginUserInput) {
+    access_token
+    error
+  }
+}
+`;

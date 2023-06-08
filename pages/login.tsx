@@ -1,12 +1,11 @@
-import React, { useEffect, useState} from 'react'
+import React, { useState } from 'react'
 import Header from '../components/Header';
-
+import {useMutation} from '@apollo/client';
 import { Alert, Box, Button, CircularProgress, Snackbar, Stack, TextField } from '@mui/material';
 import { Field, Formik } from 'formik';
-import { useLazyQuery } from "@apollo/client"
-import { GET_USER_BY_EMAIL } from './apollo-client/querries';
 import * as Yup from 'yup';
 import Cookies from 'js-cookie';
+import { LOGIN } from './apollo-client/mutations';
 
 interface errorLogin{
   error: boolean;
@@ -19,27 +18,25 @@ export default function Login() {
     message: ''
   })
 
-
-  const regex = new RegExp("^[a-zA-Z0-9]+(?:\.[a-zA-Z0-9]+)*@[a-zA-Z0-9]+(?:\.[a-zA-Z0-9]+)*$")
-
-  const [getUser, {loading}] = useLazyQuery(GET_USER_BY_EMAIL)
+  const [login, {loading}] = useMutation(LOGIN)
 
   const handleLogin = async (props : any) => {
-    const {data} = await getUser({ variables: { email: props.email } })
-    if(data && data.user){
-      if (props.password === data.user.password){
-        Cookies.set('userId', data.user._id)
-        window.location.href = '/chat';
-      }else{
-        setErrorLogin({
-          error: true,
-          message: 'Wrong password'
-        })
+    
+    const {data} = await login({ variables: {
+      loginUserInput: {
+        email: props.email,
+        password: props.password
       }
-    }else{
+    }}) 
+
+    if(data && data.login && data.login.access_token){
+      Cookies.set('token', data.login.access_token)
+      //window.location.href = '/chat';
+    }
+    else{
       setErrorLogin({
         error: true,
-        message: 'Email address is not associated with any account'
+        message: data.login.error
       })
     }
   }
@@ -50,7 +47,8 @@ export default function Login() {
       message: ''
     })
   }
-  
+
+  const regex = new RegExp("^[a-zA-Z0-9]+(?:\.[a-zA-Z0-9]+)*@[a-zA-Z0-9]+(?:\.[a-zA-Z0-9]+)*$")
   const LoginSchema = Yup.object().shape({
     email: Yup.string()
       .required('Email required')

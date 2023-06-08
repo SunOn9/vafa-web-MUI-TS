@@ -8,36 +8,21 @@ import { CREATE_CHAT } from './apollo-client/mutations';
 import Cookies from 'js-cookie';
 
 interface chat {
-  userId : string,
   question: string,
   answer: string  
-}
-
-interface currentId {
-  id: any;
-  isExist : boolean;
 }
 
 export default function Chat(): React.JSX.Element {
   const [question , setQuestion] = useState('')
   const [datas, setDatas] = useState<any>([])
-  const [currentId, setCurrentId] = useState<currentId>({
-    id: '',
-    isExist: false
-  })
+  const [isLogin, setIsLogin] = useState(false)
   const [loading, setLoading] = useState(false)
-  const usersID = Cookies.get('userId');
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  useEffect(() => handleId(), [usersID]);
+  const token = Cookies.get('token');
 
-  const handleId = () => {
-    if (!usersID) {
-      setCurrentId({id: '', isExist: false})
-    }
-    else {
-      setCurrentId({id: usersID, isExist: true})  
-    }
-  }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  useEffect(() => {if (token){
+    setIsLogin(true);
+  }}, []);
   
   //get the answer from AI
   const getAnswer = async () =>{
@@ -65,7 +50,13 @@ export default function Chat(): React.JSX.Element {
     return response
   }
 
-  const [postChat] = useMutation(CREATE_CHAT)
+  const [postChat] = useMutation(CREATE_CHAT,{
+    context: {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    },
+  })
 
   const handleSubmit = async (event : any) => {
     event.preventDefault()
@@ -76,7 +67,6 @@ export default function Chat(): React.JSX.Element {
       const result = await response.json()
 
       const chatCompletion : chat = {
-        userId: currentId.id,
         question: question,
         answer: result.choices[0].message.content
       }
@@ -86,7 +76,6 @@ export default function Chat(): React.JSX.Element {
 
       const {data} = await postChat({variables: {
         input: {
-          userIdField: chatCompletion.userId,
           questionField: chatCompletion.question,
           answerField: chatCompletion.answer
         }
@@ -127,7 +116,7 @@ export default function Chat(): React.JSX.Element {
                   }}
                   >
                   <Typography
-                    key={'req'+data.userId}
+                    key={'req' + data.question}
                     sx={{
                       p: 1,
                       m: 2,
@@ -152,7 +141,7 @@ export default function Chat(): React.JSX.Element {
                   }}
                 >
                   <Typography 
-                    key={'res'+data.userId}
+                    key={'res'+ data.question}
                     sx={{
                       p: 1,
                       m: 2,
@@ -224,7 +213,7 @@ export default function Chat(): React.JSX.Element {
       </Box>
       <Backdrop
         sx={{ color: '#fff'}}
-        open={!currentId.isExist}
+        open={!isLogin}
       >
         <Stack
           sx={{
