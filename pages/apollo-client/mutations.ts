@@ -26,3 +26,24 @@ export const LOGIN = gql`
   }
 }
 `;
+
+export const ACTIVATE_USER = gql`
+  mutation Mutation($input: String!) {
+  activateUser(input: $input) {
+    success
+    error
+  }
+}
+`;
+
+export const CHANGE_PASSWORD = gql`
+  mutation Mutation($input: ChangePasswordInput!) {
+  changePassword(input: $input)
+}
+`;
+
+export const SEND_MAIL = gql`
+mutation Mutation($input: ResetPasswordInput!) {
+  sendMailResetPassword(input: $input)
+}
+`;

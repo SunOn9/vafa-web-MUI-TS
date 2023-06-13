@@ -191,7 +191,7 @@ export default function SignIn(): React.JSX.Element {
             />
           )}
       </Box>
-      <Snackbar open={stateSignIn.error} onClose={onClose} autoHideDuration={2000}>
+        <Snackbar open={stateSignIn.error} onClose={onClose} autoHideDuration={2000}>
           <Alert severity="warning" sx={{ width: '100%' }}>
             {stateSignIn.message}
           </Alert>

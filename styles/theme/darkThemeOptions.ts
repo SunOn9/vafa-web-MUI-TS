@@ -22,7 +22,7 @@ const darkThemeOptions: ThemeOptions = {
       disabled: 'rgba(255, 255, 255, 0.3)',
       disabledBackground: 'rgba(255, 255, 255, 0.12)'
     },
-    divider: 'rgba(255, 255, 255, 0.12)'
+    divider: 'rgba(255, 255, 255, 0.12)',
   },
 };
 

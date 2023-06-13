@@ -1,11 +1,11 @@
 import React, { useState } from 'react'
 import Header from '../components/Header';
 import {useMutation} from '@apollo/client';
-import { Alert, Box, Button, CircularProgress, Snackbar, Stack, TextField } from '@mui/material';
+import { Alert, Box, Button, CircularProgress, Link, Snackbar, Stack, TextField, Typography } from '@mui/material';
 import { Field, Formik } from 'formik';
 import * as Yup from 'yup';
 import Cookies from 'js-cookie';
-import { LOGIN } from './apollo-client/mutations';
+import { LOGIN, SEND_MAIL } from './apollo-client/mutations';
 
 interface errorLogin{
   error: boolean;
@@ -19,6 +19,7 @@ export default function Login() {
   })
 
   const [login, {loading}] = useMutation(LOGIN)
+  
 
   const handleLogin = async (props : any) => {
     
@@ -140,6 +141,10 @@ export default function Login() {
                     }}
                   />
                   <Button
+                    onClick={()=>{window.location.href = '/forgotPassword';}}>
+                    Forgot password ?
+                  </Button>
+                  <Button
                     type="submit"
                     variant="contained"
                     disabled={loading}
@@ -149,8 +154,10 @@ export default function Login() {
                     Login
                   </Button>
                 </Stack>
+                
               </Box>
             </form>
+            
           )}
         </Formik>
         {loading && (
@@ -162,10 +169,10 @@ export default function Login() {
           />
         )}
         <Snackbar open={errorLogin.error} onClose={onClose} autoHideDuration={2000}>
-        <Alert severity="warning" sx={{ width: '100%' }}>
-          {errorLogin.message}
-        </Alert>
-      </Snackbar>
+          <Alert severity="warning" sx={{ width: '100%' }}>
+            {errorLogin.message}
+          </Alert>
+        </Snackbar>
       </Box>
     </>
   )
